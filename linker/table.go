@@ -1,7 +1,8 @@
-package types
+package linker
 
 import (
 	"fmt"
+	image2 "github.com/obgnail/LinkGameCheater/image"
 	"image"
 	"log"
 	"strings"
@@ -17,7 +18,7 @@ type GameTable struct {
 	lineLen int
 	table   [][]*Point
 
-	pointTypeMap map[int][]*Point
+	PointTypeMap map[int][]*Point
 }
 
 func NewGameTable(linkGameTable [][]int) *GameTable {
@@ -28,7 +29,7 @@ func NewGameTable(linkGameTable [][]int) *GameTable {
 		rowLen:       rowLen,
 		lineLen:      lineLen,
 		table:        make([][]*Point, rowLen),
-		pointTypeMap: make(map[int][]*Point),
+		PointTypeMap: make(map[int][]*Point),
 	}
 	for rowIdx := 0; rowIdx < t.rowLen; rowIdx++ {
 		t.table[rowIdx] = make([]*Point, lineLen)
@@ -37,7 +38,7 @@ func NewGameTable(linkGameTable [][]int) *GameTable {
 			point := newPoint(rowIdx, lineIdx, typeCode)
 			t.table[rowIdx][lineIdx] = point
 			if typeCode != config.PointTypeCodeEmpty {
-				t.pointTypeMap[typeCode] = append(t.pointTypeMap[typeCode], point)
+				t.PointTypeMap[typeCode] = append(t.PointTypeMap[typeCode], point)
 			}
 		}
 	}
@@ -66,9 +67,9 @@ func NewTableFromImageByCount(
 	imagePath string,
 	fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY int,
 	rowLen, lineLen int,
-	emptyIndies []*Idx,
+	emptyIndies []*image2.Idx,
 ) *GameTable {
-	img, err := NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
+	img, err := image2.NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -88,9 +89,9 @@ func NewTableFromImageByPixel(
 	imagePath string,
 	fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY int,
 	subImgDW, subImgDH int,
-	emptyIndies []*Idx,
+	emptyIndies []*image2.Idx,
 ) *GameTable {
-	img, err := NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
+	img, err := image2.NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -106,8 +107,8 @@ func NewTableFromImageByPixel(
 	return table
 }
 
-func NewTableByImageArr(imageArr [][]*image.NRGBA, emptyIndies []*Idx) (*GameTable, error) {
-	linkGameTable, err := GenTableArrByImages(imageArr, emptyIndies)
+func NewTableByImageArr(imageArr [][]*image.NRGBA, emptyIndies []*image2.Idx) (*GameTable, error) {
+	linkGameTable, err := image2.GenTableArrByImages(imageArr, emptyIndies)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +154,7 @@ func InitTable(method string) {
 	case "FromArr":
 		table = NewTableFromArr(config.Table)
 	case "FromImageByCount":
-		emptyIndies := NewIndies(config.EmptySubImageIndies)
+		emptyIndies := image2.NewIndies(config.EmptySubImageIndies)
 		table = NewTableFromImageByCount(
 			config.ImagePath,
 			config.FixImageRectangleMinPointX,
@@ -165,7 +166,7 @@ func InitTable(method string) {
 			emptyIndies,
 		)
 	case "FromImageByPixel":
-		emptyIndies := NewIndies(config.EmptySubImageIndies)
+		emptyIndies := image2.NewIndies(config.EmptySubImageIndies)
 		table = NewTableFromImageByPixel(
 			config.ImagePath,
 			config.FixImageRectangleMinPointX,

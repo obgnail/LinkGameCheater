@@ -1,55 +1,55 @@
-package types
+package linker
 
 import (
 	"fmt"
 	"log"
 )
 
-type LinkTester struct {
+type Linker struct {
 	*PointPair
 }
 
-func NewLinkTester(pp *PointPair) *LinkTester {
-	return &LinkTester{PointPair: pp}
+func NewLinkTester(pp *PointPair) *Linker {
+	return &Linker{PointPair: pp}
 }
 
-func (lt *LinkTester) getPathfinder(from string) *Point {
+func (l *Linker) getPathfinder(from string) *Point {
 	var point *Point
 	switch from {
 	case "start":
-		point = lt.Start
+		point = l.Start
 	case "end":
-		point = lt.End
+		point = l.End
 	}
 	return point
 }
 
 // 一划：横
-func (lt *LinkTester) CanLinkInSameLineAxis() bool {
-	if isSamePoint := lt.EqualPoint(); isSamePoint {
+func (l *Linker) CanLinkInSameLineAxis() bool {
+	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := lt.getPathfinder("start")
+	currentPoint := l.getPathfinder("start")
 	for {
 		nextPoint, err := currentPoint.Right()
 		if err != nil {
 			log.Fatal(err)
 		}
-		if nextPoint.RightThen(lt.End) {
+		if nextPoint.RightThen(l.End) {
 			log.Fatal("------ move Right Over Then End Point", nextPoint)
 		}
 		// 移动之后，马上进行判断:
-		arrived := EqualPoint(nextPoint, lt.End)
+		arrived := EqualPoint(nextPoint, l.End)
 		if arrived {
-			pointIsEmpty := nextPoint.isEmpty() || currentPoint.isEmpty()
-			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, lt.End)
+			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
+			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
 			if pointIsEmpty || currentPointEqualThenEndPoint {
 				return true
 			} else {
 				return false
 			}
 		} else {
-			if nextPoint.isEmpty() {
+			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
 			} else {
 				return false
@@ -59,30 +59,30 @@ func (lt *LinkTester) CanLinkInSameLineAxis() bool {
 }
 
 // 一划：竖
-func (lt *LinkTester) CanLinkInSameRowAxis() bool {
-	if isSamePoint := lt.EqualPoint(); isSamePoint {
+func (l *Linker) CanLinkInSameRowAxis() bool {
+	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := lt.getPathfinder("start")
+	currentPoint := l.getPathfinder("start")
 	for {
 		nextPoint, err := currentPoint.Down()
 		if err != nil {
 			log.Fatal(err)
 		}
-		if nextPoint.UnderThen(lt.End) {
+		if nextPoint.UnderThen(l.End) {
 			log.Fatal("------  move Bottom Over Then End Point", nextPoint)
 		}
-		arrived := EqualPoint(nextPoint, lt.End)
+		arrived := EqualPoint(nextPoint, l.End)
 		if arrived {
-			pointIsEmpty := nextPoint.isEmpty() || currentPoint.isEmpty()
-			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, lt.End)
+			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
+			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
 			if pointIsEmpty || currentPointEqualThenEndPoint {
 				return true
 			} else {
 				return false
 			}
 		} else {
-			if nextPoint.isEmpty() {
+			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
 			} else {
 				return false
@@ -92,13 +92,13 @@ func (lt *LinkTester) CanLinkInSameRowAxis() bool {
 }
 
 // 一划
-func (lt *LinkTester) CanLinkInOneStroke() bool {
+func (l *Linker) CanLinkInOneStroke() bool {
 	var canLink bool
 	switch {
-	case lt.Start.RowIdx == lt.End.RowIdx:
-		canLink = lt.CanLinkInSameLineAxis()
-	case lt.Start.LineIdx == lt.End.LineIdx:
-		canLink = lt.CanLinkInSameRowAxis()
+	case l.Start.RowIdx == l.End.RowIdx:
+		canLink = l.CanLinkInSameLineAxis()
+	case l.Start.LineIdx == l.End.LineIdx:
+		canLink = l.CanLinkInSameRowAxis()
 	}
 	return canLink
 }
@@ -114,11 +114,11 @@ func (lt *LinkTester) CanLinkInOneStroke() bool {
         A└────────┘D
       (X1,Y1)     (X2,Y1)
 */
-func (lt *LinkTester) CanLinkInTwoStrokes() bool {
+func (l *Linker) CanLinkInTwoStrokes() bool {
 	table := GetTable()
 
-	PointA := lt.Start
-	PointB := lt.End
+	PointA := l.Start
+	PointB := l.End
 
 	PointC, err1 := table.GetPoint(PointB.RowIdx, PointA.LineIdx)
 	PointD, err2 := table.GetPoint(PointA.RowIdx, PointB.LineIdx)
@@ -146,9 +146,9 @@ func (lt *LinkTester) CanLinkInTwoStrokes() bool {
 }
 
 // 获取 EndPoint为零点的坐标轴上 的所有可抵达点
-func (lt *LinkTester) GetEndPointCanReachPointsOnAxis() []*Point {
+func (l *Linker) GetEndPointCanReachPointsOnAxis() []*Point {
 	var ret []*Point
-	end := lt.End
+	end := l.End
 
 	collectCanReachPoints := func(direction string) {
 		current := end
@@ -158,7 +158,7 @@ func (lt *LinkTester) GetEndPointCanReachPointsOnAxis() []*Point {
 				log.Fatal(err)
 			}
 			current = newPoint
-			if current.isEmpty() {
+			if current.IsEmpty() {
 				ret = append(ret, current)
 			} else {
 				break
@@ -189,10 +189,10 @@ func (lt *LinkTester) GetEndPointCanReachPointsOnAxis() []*Point {
 
 	只要A能在二划之内抵达P1-P2的任意一个点(P为零点的坐标轴上的任意一点),A就一定能在三划之内抵达P
 */
-func (lt *LinkTester) CanLinkInThreeStrokes() bool {
-	Points := lt.GetEndPointCanReachPointsOnAxis()
+func (l *Linker) CanLinkInThreeStrokes() bool {
+	Points := l.GetEndPointCanReachPointsOnAxis()
 	for _, PointPn := range Points {
-		PointA := lt.Start
+		PointA := l.Start
 		AToPn := NewLinkTester(NewPointPair(PointA, PointPn))
 		if AToPn.CanLinkInTwoStrokes() {
 			return true
@@ -201,20 +201,20 @@ func (lt *LinkTester) CanLinkInThreeStrokes() bool {
 	return false
 }
 
-func (lt *LinkTester) CanLink() (canLink bool) {
-	if !lt.TypeCodeEqual() || lt.Start.isEmpty() || lt.End.isEmpty() {
+func (l *Linker) CanLink() (canLink bool) {
+	if !l.TypeCodeEqual() || l.Start.IsEmpty() || l.End.IsEmpty() {
 		return false
 	}
 
-	inSameAxis := lt.InSameAxis()
+	inSameAxis := l.InSameAxis()
 	if inSameAxis {
-		canLink = lt.CanLinkInOneStroke()
+		canLink = l.CanLinkInOneStroke()
 	} else {
-		canLink = lt.CanLinkInTwoStrokes()
+		canLink = l.CanLinkInTwoStrokes()
 	}
 
 	if !canLink {
-		canLink = lt.CanLinkInThreeStrokes()
+		canLink = l.CanLinkInThreeStrokes()
 	}
 	return
 }

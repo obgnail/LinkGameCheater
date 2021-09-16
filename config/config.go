@@ -41,7 +41,7 @@ var (
 // 使用图片生成Table
 var (
 	// 原图片位置
-	ImagePath = "images/test.png"
+	ImagePath = "data/images/test.png"
 	// 修剪原图片(都为-1表示不修剪)
 	FixImageRectangleMinPointX = -1
 	FixImageRectangleMinPointY = -1

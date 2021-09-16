@@ -1,4 +1,4 @@
-package types
+package linker
 
 import (
 	"encoding/json"
@@ -39,7 +39,7 @@ func (p *Point) AtBorder() bool {
 	return p.RowIdx == 0 || p.LineIdx == 0 || p.RowIdx == table.rowLen-1 || p.LineIdx == table.lineLen-1
 }
 
-func (p *Point) isEmpty() bool {
+func (p *Point) IsEmpty() bool {
 	return p.TypeCode == config.PointTypeCodeEmpty
 }
 

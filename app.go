@@ -4,21 +4,22 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/obgnail/LinkGameCheater/cheater"
 	"github.com/obgnail/LinkGameCheater/config"
-	"github.com/obgnail/LinkGameCheater/types"
+	"github.com/obgnail/LinkGameCheater/linker"
 )
 
 func run() error {
 	t := time.Now()
 
-	types.InitTable(config.GenTableMethod)
-	table := types.GetTable()
+	linker.InitTable(config.GenTableMethod)
+	table := linker.GetTable()
 	fmt.Println("------ table ------")
 	fmt.Println(table)
 
-	game := types.NewGame(table)
+	c := cheater.NewGame(table)
 	fmt.Println("------ step ------")
-	if err := game.Play(); err != nil {
+	if err := c.Play(); err != nil {
 		return err
 	}
 
