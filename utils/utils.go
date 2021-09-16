@@ -2,9 +2,10 @@ package utils
 
 import (
 	"errors"
-	"github.com/obgnail/LinkGameCheater/config"
 	"math/rand"
 	"time"
+
+	"github.com/obgnail/LinkGameCheater/config"
 )
 
 func GenRandomTableList(typeCodeCount, totalCount int) ([]int, error) {

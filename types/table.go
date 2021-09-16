@@ -2,11 +2,12 @@ package types
 
 import (
 	"fmt"
-	"github.com/obgnail/LinkGameCheater/config"
-	"github.com/obgnail/LinkGameCheater/utils"
 	"image"
 	"log"
 	"strings"
+
+	"github.com/obgnail/LinkGameCheater/config"
+	"github.com/obgnail/LinkGameCheater/utils"
 )
 
 var Table *GameTable

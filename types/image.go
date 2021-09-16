@@ -2,13 +2,14 @@ package types
 
 import (
 	"fmt"
-	"github.com/obgnail/LinkGameCheater/config"
-	"github.com/rivo/duplo"
 	"image"
 	"image/color"
 	"image/png"
 	"os"
 	"sort"
+
+	"github.com/obgnail/LinkGameCheater/config"
+	"github.com/rivo/duplo"
 )
 
 type Image struct {
