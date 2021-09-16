@@ -26,7 +26,7 @@ func (lt *LinkTester) getPathfinder(from string) *Point {
 
 // 一划：横
 func (lt *LinkTester) CanLinkInSameLineAxis() bool {
-	if isSamePoint := EqualPoint(lt.Start, lt.End); isSamePoint {
+	if isSamePoint := lt.EqualPoint(); isSamePoint {
 		return true
 	}
 	currentPoint := lt.getPathfinder("start")
@@ -60,7 +60,7 @@ func (lt *LinkTester) CanLinkInSameLineAxis() bool {
 
 // 一划：竖
 func (lt *LinkTester) CanLinkInSameRowAxis() bool {
-	if isSamePoint := EqualPoint(lt.Start, lt.End); isSamePoint {
+	if isSamePoint := lt.EqualPoint(); isSamePoint {
 		return true
 	}
 	currentPoint := lt.getPathfinder("start")

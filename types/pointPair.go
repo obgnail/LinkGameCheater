@@ -42,5 +42,9 @@ func (pp *PointPair) InSameAxis() bool {
 }
 
 func (pp *PointPair) TypeCodeEqual() bool {
-	return pp.Start.TypeCode == pp.End.TypeCode
+	return EqualTypeCode(pp.Start, pp.End)
+}
+
+func (pp *PointPair) EqualPoint() bool {
+	return EqualPoint(pp.Start, pp.End)
 }
