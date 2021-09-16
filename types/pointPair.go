@@ -24,16 +24,11 @@ func (pp *PointPair) String() string {
 func NewPointPair(p1, p2 *Point) *PointPair {
 	var start, end *Point
 	if p1.LineIdx < p2.LineIdx || (p1.LineIdx == p2.LineIdx && p1.RowIdx < p2.RowIdx) {
-		start = p1
-		end = p2
+		start, end = p1, p2
 	} else {
-		start = p2
-		end = p1
+		start, end = p2, p1
 	}
-	pp := new(PointPair)
-	pp.Start = start
-	pp.End = end
-	return pp
+	return &PointPair{Start: start, End: end}
 }
 
 // 同轴

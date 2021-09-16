@@ -115,11 +115,13 @@ func (lt *LinkTester) CanLinkInOneStroke() bool {
       (X1,Y1)     (X2,Y1)
 */
 func (lt *LinkTester) CanLinkInTwoStrokes() bool {
+	table := GetTable()
+
 	PointA := lt.Start
 	PointB := lt.End
 
-	PointC, err1 := Table.GetPoint(PointB.RowIdx, PointA.LineIdx)
-	PointD, err2 := Table.GetPoint(PointA.RowIdx, PointB.LineIdx)
+	PointC, err1 := table.GetPoint(PointB.RowIdx, PointA.LineIdx)
+	PointD, err2 := table.GetPoint(PointA.RowIdx, PointB.LineIdx)
 	if err1 != nil || err2 != nil {
 		fmt.Println(err1, err2)
 		return false

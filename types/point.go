@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/json"
 	"fmt"
-
 	"github.com/obgnail/LinkGameCheater/config"
 )
 
@@ -13,7 +12,7 @@ type Point struct {
 	TypeCode int
 }
 
-// 仅用于创建GameTable,如果需要获取Point,请使用 Table.GetPoint()
+// 仅用于创建GameTable,如果需要获取Point,请使用 table.GetPoint()
 func newPoint(rowIdx, lineIdx, typeCode int) *Point {
 	p := new(Point)
 	p.RowIdx = rowIdx
@@ -31,11 +30,13 @@ func (p *Point) String() string {
 }
 
 func (p *Point) isInValid() bool {
-	return 0 > p.RowIdx || p.RowIdx >= Table.rowLen || 0 > p.LineIdx || p.LineIdx >= Table.lineLen
+	table := GetTable()
+	return 0 > p.RowIdx || p.RowIdx >= table.rowLen || 0 > p.LineIdx || p.LineIdx >= table.lineLen
 }
 
 func (p *Point) AtBorder() bool {
-	return p.RowIdx == 0 || p.LineIdx == 0 || p.RowIdx == Table.rowLen-1 || p.LineIdx == Table.lineLen-1
+	table := GetTable()
+	return p.RowIdx == 0 || p.LineIdx == 0 || p.RowIdx == table.rowLen-1 || p.LineIdx == table.lineLen-1
 }
 
 func (p *Point) isEmpty() bool {
@@ -64,12 +65,14 @@ func (p *Point) Direction(direction string) (*Point, error) {
 	case "down":
 		rowIdx++
 	}
-	if p.isInValid() {
-		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, Table.rowLen, Table.lineLen)
-	}
-	newPoint, err := Table.GetPoint(rowIdx, lineIdx)
+
+	table := GetTable()
+	newPoint, err := table.GetPoint(rowIdx, lineIdx)
 	if err != nil {
 		return nil, err
+	}
+	if newPoint.isInValid() {
+		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, table.rowLen, table.lineLen)
 	}
 	return newPoint, nil
 }

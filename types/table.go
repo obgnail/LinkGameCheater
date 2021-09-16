@@ -10,12 +10,13 @@ import (
 	"github.com/obgnail/LinkGameCheater/utils"
 )
 
-var Table *GameTable
+var table *GameTable
 
 type GameTable struct {
-	rowLen       int
-	lineLen      int
-	table        [][]*Point
+	rowLen  int
+	lineLen int
+	table   [][]*Point
+
 	pointTypeMap map[int][]*Point
 }
 
@@ -148,12 +149,12 @@ func (t *GameTable) SetEmpty(rowIdx, lineIdx int) error {
 func InitTable(method string) {
 	switch method {
 	case "FromRandom":
-		Table = NewTableFromRandom(config.TypeCodeCount, config.LineLen, config.RowLen)
+		table = NewTableFromRandom(config.TypeCodeCount, config.LineLen, config.RowLen)
 	case "FromArr":
-		Table = NewTableFromArr(config.Table)
+		table = NewTableFromArr(config.Table)
 	case "FromImageByCount":
 		emptyIndies := NewIndies(config.EmptySubImageIndies)
-		Table = NewTableFromImageByCount(
+		table = NewTableFromImageByCount(
 			config.ImagePath,
 			config.FixImageRectangleMinPointX,
 			config.FixImageRectangleMinPointY,
@@ -165,7 +166,7 @@ func InitTable(method string) {
 		)
 	case "FromImageByPixel":
 		emptyIndies := NewIndies(config.EmptySubImageIndies)
-		Table = NewTableFromImageByPixel(
+		table = NewTableFromImageByPixel(
 			config.ImagePath,
 			config.FixImageRectangleMinPointX,
 			config.FixImageRectangleMinPointY,
@@ -178,4 +179,8 @@ func InitTable(method string) {
 	default:
 		log.Fatal("ERROR Method")
 	}
+}
+
+func GetTable() *GameTable {
+	return table
 }
