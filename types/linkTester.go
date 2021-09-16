@@ -26,7 +26,7 @@ func (lt *LinkTester) getPathfinder(from string) *Point {
 
 // 一划：横
 func (lt *LinkTester) CanLinkInSameLineAxis() bool {
-	if isSamePoint := lt.Start.Equal(lt.End); isSamePoint {
+	if isSamePoint := EqualPoint(lt.Start, lt.End); isSamePoint {
 		return true
 	}
 	currentPoint := lt.getPathfinder("start")
@@ -39,10 +39,10 @@ func (lt *LinkTester) CanLinkInSameLineAxis() bool {
 			log.Fatal("------ move Right Over Then End Point", nextPoint)
 		}
 		// 移动之后，马上进行判断:
-		arrived := nextPoint.Equal(lt.End)
+		arrived := EqualPoint(nextPoint, lt.End)
 		if arrived {
 			pointIsEmpty := nextPoint.isEmpty() || currentPoint.isEmpty()
-			currentPointEqualThenEndPoint := currentPoint.EqualTypeCode(lt.End)
+			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, lt.End)
 			if pointIsEmpty || currentPointEqualThenEndPoint {
 				return true
 			} else {
@@ -60,7 +60,7 @@ func (lt *LinkTester) CanLinkInSameLineAxis() bool {
 
 // 一划：竖
 func (lt *LinkTester) CanLinkInSameRowAxis() bool {
-	if isSamePoint := lt.Start.Equal(lt.End); isSamePoint {
+	if isSamePoint := EqualPoint(lt.Start, lt.End); isSamePoint {
 		return true
 	}
 	currentPoint := lt.getPathfinder("start")
@@ -72,10 +72,10 @@ func (lt *LinkTester) CanLinkInSameRowAxis() bool {
 		if nextPoint.UnderThen(lt.End) {
 			log.Fatal("------  move Bottom Over Then End Point", nextPoint)
 		}
-		arrived := nextPoint.Equal(lt.End)
+		arrived := EqualPoint(nextPoint, lt.End)
 		if arrived {
 			pointIsEmpty := nextPoint.isEmpty() || currentPoint.isEmpty()
-			currentPointEqualThenEndPoint := currentPoint.EqualTypeCode(lt.End)
+			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, lt.End)
 			if pointIsEmpty || currentPointEqualThenEndPoint {
 				return true
 			} else {

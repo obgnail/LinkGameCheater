@@ -14,7 +14,7 @@ type Point struct {
 }
 
 // 仅用于创建GameTable,如果需要获取Point,请使用 Table.GetPoint()
-func NewPoint(rowIdx, lineIdx, typeCode int) *Point {
+func newPoint(rowIdx, lineIdx, typeCode int) *Point {
 	p := new(Point)
 	p.RowIdx = rowIdx
 	p.LineIdx = lineIdx
@@ -40,22 +40,6 @@ func (p *Point) AtBorder() bool {
 
 func (p *Point) isEmpty() bool {
 	return p.TypeCode == config.PointTypeCodeEmpty
-}
-
-func (p *Point) Equal(other *Point) bool {
-	if p == other {
-		return true
-	}
-
-	if (p == nil && other != nil) || (p != nil && other == nil) {
-		return false
-	}
-
-	return *p == *other
-}
-
-func (p *Point) EqualTypeCode(other *Point) bool {
-	return p.TypeCode == other.TypeCode
 }
 
 func (p *Point) RightThen(other *Point) bool {
@@ -116,4 +100,18 @@ func Compose(points []*Point) []*PointPair {
 		}
 	}
 	return ret
+}
+
+func EqualPoint(a, b *Point) bool {
+	if a == b {
+		return true
+	}
+	if (a == nil && b != nil) || (a != nil && b == nil) {
+		return false
+	}
+	return *a == *b
+}
+
+func EqualTypeCode(a, b *Point) bool {
+	return a.TypeCode == b.TypeCode
 }

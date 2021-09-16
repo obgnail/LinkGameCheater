@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/obgnail/LinkGameCheater/config"
 	"github.com/obgnail/LinkGameCheater/types"
-	"time"
 )
 
 func run() error {

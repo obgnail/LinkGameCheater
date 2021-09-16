@@ -7,9 +7,12 @@ const (
 	SimilarScore = -40
 )
 
-// 共有四种生成Table的方法
 const (
-	// FromRandom or FromArr or FromImageByCount or FromImageByPixel
+	// 共有四种生成Table的方法
+	// FromRandom
+	// FromArr
+	// FromImageByCount
+	// FromImageByPixel
 	GenTableMethod = "FromImageByCount"
 )
 

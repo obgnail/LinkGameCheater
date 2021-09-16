@@ -33,7 +33,7 @@ func NewGameTable(linkGameTable [][]int) *GameTable {
 		t.table[rowIdx] = make([]*Point, lineLen)
 		for lineIdx := 0; lineIdx < t.lineLen; lineIdx++ {
 			typeCode := linkGameTable[rowIdx][lineIdx]
-			point := NewPoint(rowIdx, lineIdx, typeCode)
+			point := newPoint(rowIdx, lineIdx, typeCode)
 			t.table[rowIdx][lineIdx] = point
 			if typeCode != config.PointTypeCodeEmpty {
 				t.pointTypeMap[typeCode] = append(t.pointTypeMap[typeCode], point)
