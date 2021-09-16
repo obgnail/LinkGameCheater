@@ -7,19 +7,19 @@ import (
 )
 
 type Cheater struct {
-	*linker.GameTable
+	table      *linker.GameTable
 	pointPairs map[*linker.PointPair]byte
 }
 
 func NewGame(table *linker.GameTable) *Cheater {
-	g := &Cheater{GameTable: table}
+	g := &Cheater{table: table}
 	g.collectPointPairs()
 	return g
 }
 
 func (c *Cheater) collectPointPairs() {
 	ret := make(map[*linker.PointPair]byte)
-	for _, points := range c.PointTypeMap {
+	for _, points := range c.table.PointTypeMap {
 		pps := linker.Compose(points)
 		for _, pp := range pps {
 			ret[pp] = 1
@@ -43,10 +43,10 @@ func (c *Cheater) Play() error {
 				fmt.Printf(" step %d %s\n", step, pointPair)
 				step++
 				hadLinked = true
-				if err := c.SetEmpty(pointPair.Start.RowIdx, pointPair.Start.LineIdx); err != nil {
+				if err := c.table.SetEmpty(pointPair.Start.RowIdx, pointPair.Start.LineIdx); err != nil {
 					return err
 				}
-				if err := c.SetEmpty(pointPair.End.RowIdx, pointPair.End.LineIdx); err != nil {
+				if err := c.table.SetEmpty(pointPair.End.RowIdx, pointPair.End.LineIdx); err != nil {
 					return err
 				}
 			}
