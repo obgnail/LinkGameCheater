@@ -9,7 +9,7 @@ type Linker struct {
 	*PointPair
 }
 
-func NewLinkTester(pp *PointPair) *Linker {
+func NewLinker(pp *PointPair) *Linker {
 	return &Linker{PointPair: pp}
 }
 
@@ -121,16 +121,16 @@ func (l *Linker) CanLinkInTwoStrokes() bool {
 		fmt.Println(err1, err2)
 		return false
 	}
-	LinkAToC := NewLinkTester(NewPointPair(PointC, PointA))
-	LinkCToB := NewLinkTester(NewPointPair(PointC, PointB))
+	LinkAToC := NewLinker(NewPointPair(PointC, PointA))
+	LinkCToB := NewLinker(NewPointPair(PointC, PointB))
 
 	ALinkC := LinkAToC.CanLinkInSameRowAxis()
 	CLinkB := LinkCToB.CanLinkInSameLineAxis()
 	if ALinkC && CLinkB {
 		return true
 	}
-	LinkAToD := NewLinkTester(NewPointPair(PointD, PointA))
-	LinkDToB := NewLinkTester(NewPointPair(PointD, PointB))
+	LinkAToD := NewLinker(NewPointPair(PointD, PointA))
+	LinkDToB := NewLinker(NewPointPair(PointD, PointB))
 
 	ALinkD := LinkAToD.CanLinkInSameLineAxis()
 	DLinkB := LinkDToB.CanLinkInSameRowAxis()
@@ -188,7 +188,7 @@ func (l *Linker) CanLinkInThreeStrokes() bool {
 	Points := l.GetEndPointCanReachPointsOnAxis()
 	for _, PointPn := range Points {
 		PointA := l.Start
-		AToPn := NewLinkTester(NewPointPair(PointA, PointPn))
+		AToPn := NewLinker(NewPointPair(PointA, PointPn))
 		if AToPn.CanLinkInTwoStrokes() {
 			return true
 		}

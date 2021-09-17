@@ -55,8 +55,8 @@ func (c *Cheater) Play() error {
 				continue
 			}
 
-			lt := linker.NewLinkTester(pointPair)
-			canLink := lt.TestLink()
+			l := linker.NewLinker(pointPair)
+			canLink := l.TestLink()
 			if canLink {
 				fmt.Printf(" step %d %s\n", step, pointPair)
 				step++
