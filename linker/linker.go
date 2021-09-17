@@ -30,22 +30,19 @@ func (l *Linker) CanLinkInSameLineAxis() bool {
 		return true
 	}
 	currentPoint := l.getPoint("start")
+	targetPoint := l.getPoint("end")
 	for {
 		nextPoint, err := currentPoint.Right()
 		if err != nil {
 			log.Fatal(err)
 		}
-		if nextPoint.RightThen(l.End) {
+		if nextPoint.RightThen(targetPoint) {
 			log.Fatal("------ move Right Over Then End Point", nextPoint)
 		}
-		// 移动之后，马上进行判断:
-		arrived := EqualPoint(nextPoint, l.End)
+		// 移动之后，马上进行判断
+		arrived := EqualPoint(nextPoint, targetPoint)
 		if arrived {
-			// 两点重合,当其中一点为空 或 两点typeCode相等时:
-			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
-			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
-			ok := pointIsEmpty || currentPointEqualThenEndPoint
-			return ok
+			return nextPoint.IsEmpty() || currentPoint.IsEmpty() || EqualTypeCode(currentPoint, targetPoint)
 		} else {
 			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
@@ -62,20 +59,18 @@ func (l *Linker) CanLinkInSameRowAxis() bool {
 		return true
 	}
 	currentPoint := l.getPoint("start")
+	targetPoint := l.getPoint("end")
 	for {
 		nextPoint, err := currentPoint.Down()
 		if err != nil {
 			log.Fatal(err)
 		}
-		if nextPoint.UnderThen(l.End) {
+		if nextPoint.UnderThen(targetPoint) {
 			log.Fatal("------  move Bottom Over Then End Point", nextPoint)
 		}
-		arrived := EqualPoint(nextPoint, l.End)
+		arrived := EqualPoint(nextPoint, targetPoint)
 		if arrived {
-			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
-			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
-			ok := pointIsEmpty || currentPointEqualThenEndPoint
-			return ok
+			return nextPoint.IsEmpty() || currentPoint.IsEmpty() || EqualTypeCode(currentPoint, targetPoint)
 		} else {
 			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
@@ -207,7 +202,6 @@ func (l *Linker) TestLink() (canLink bool) {
 	} else {
 		canLink = l.CanLinkInTwoStrokes()
 	}
-
 	if !canLink {
 		canLink = l.CanLinkInThreeStrokes()
 	}

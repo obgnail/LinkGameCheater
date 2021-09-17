@@ -2,6 +2,8 @@ package linker
 
 import (
 	"encoding/json"
+	"log"
+
 	"github.com/obgnail/LinkGameCheater/config"
 )
 
@@ -36,12 +38,12 @@ func NewPoint(rowIdx, lineIdx, typeCode int) *Point {
 func (p *Point) String() string {
 	out, err := json.Marshal(p)
 	if err != nil {
-		return err.Error()
+		log.Fatal(err)
 	}
 	return string(out)
 }
 
-func (p *Point) isInValid() bool {
+func (p *Point) IsInValid() bool {
 	table := GetTable()
 	return 0 > p.RowIdx || p.RowIdx >= table.RowLen || 0 > p.LineIdx || p.LineIdx >= table.LineLen
 }
