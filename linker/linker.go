@@ -201,7 +201,7 @@ func (l *Linker) CanLinkInThreeStrokes() bool {
 	return false
 }
 
-func (l *Linker) CanLink() (canLink bool) {
+func (l *Linker) TestLink() (canLink bool) {
 	if !l.TypeCodeEqual() || l.Start.IsEmpty() || l.End.IsEmpty() {
 		return false
 	}

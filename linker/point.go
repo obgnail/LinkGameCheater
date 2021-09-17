@@ -13,7 +13,7 @@ type Point struct {
 }
 
 // 仅用于创建GameTable,如果需要获取Point,请使用 table.GetPoint()
-func newPoint(rowIdx, lineIdx, typeCode int) *Point {
+func NewPoint(rowIdx, lineIdx, typeCode int) *Point {
 	p := new(Point)
 	p.RowIdx = rowIdx
 	p.LineIdx = lineIdx
@@ -31,12 +31,12 @@ func (p *Point) String() string {
 
 func (p *Point) isInValid() bool {
 	table := GetTable()
-	return 0 > p.RowIdx || p.RowIdx >= table.rowLen || 0 > p.LineIdx || p.LineIdx >= table.lineLen
+	return 0 > p.RowIdx || p.RowIdx >= table.RowLen || 0 > p.LineIdx || p.LineIdx >= table.LineLen
 }
 
 func (p *Point) AtBorder() bool {
 	table := GetTable()
-	return p.RowIdx == 0 || p.LineIdx == 0 || p.RowIdx == table.rowLen-1 || p.LineIdx == table.lineLen-1
+	return p.RowIdx == 0 || p.LineIdx == 0 || p.RowIdx == table.RowLen-1 || p.LineIdx == table.LineLen-1
 }
 
 func (p *Point) IsEmpty() bool {
@@ -72,7 +72,7 @@ func (p *Point) Direction(direction string) (*Point, error) {
 		return nil, err
 	}
 	if newPoint.isInValid() {
-		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, table.rowLen, table.lineLen)
+		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, table.RowLen, table.LineLen)
 	}
 	return newPoint, nil
 }

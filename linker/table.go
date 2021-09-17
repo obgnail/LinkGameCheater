@@ -2,54 +2,61 @@ package linker
 
 import (
 	"fmt"
+	"github.com/obgnail/LinkGameCheater/config"
 	image2 "github.com/obgnail/LinkGameCheater/image"
+	"github.com/obgnail/LinkGameCheater/utils"
 	"image"
 	"log"
 	"strings"
-
-	"github.com/obgnail/LinkGameCheater/config"
-	"github.com/obgnail/LinkGameCheater/utils"
 )
 
-var table *GameTable
+var table *Table
 
-type GameTable struct {
-	rowLen  int
-	lineLen int
-	table   [][]*Point
-
-	PointTypeMap map[int][]*Point
+type Table struct {
+	RowLen  int
+	LineLen int
+	Table   [][]*Point
 }
 
-func NewGameTable(linkGameTable [][]int) *GameTable {
+func newTable(linkGameTable [][]int) *Table {
 	rowLen := len(linkGameTable)
 	lineLen := len(linkGameTable[0])
-
-	t := &GameTable{
-		rowLen:       rowLen,
-		lineLen:      lineLen,
-		table:        make([][]*Point, rowLen),
-		PointTypeMap: make(map[int][]*Point),
+	t := &Table{
+		RowLen:  rowLen,
+		LineLen: lineLen,
+		Table:   make([][]*Point, rowLen),
 	}
-	for rowIdx := 0; rowIdx < t.rowLen; rowIdx++ {
-		t.table[rowIdx] = make([]*Point, lineLen)
-		for lineIdx := 0; lineIdx < t.lineLen; lineIdx++ {
+
+	for rowIdx := 0; rowIdx < t.RowLen; rowIdx++ {
+		t.Table[rowIdx] = make([]*Point, lineLen)
+		for lineIdx := 0; lineIdx < t.LineLen; lineIdx++ {
 			typeCode := linkGameTable[rowIdx][lineIdx]
-			point := newPoint(rowIdx, lineIdx, typeCode)
-			t.table[rowIdx][lineIdx] = point
-			if typeCode != config.PointTypeCodeEmpty {
-				t.PointTypeMap[typeCode] = append(t.PointTypeMap[typeCode], point)
-			}
+			point := NewPoint(rowIdx, lineIdx, typeCode)
+			t.Table[rowIdx][lineIdx] = point
 		}
 	}
 	return t
 }
 
-func NewTableFromArr(tableArr [][]int) *GameTable {
-	return NewGameTable(tableArr)
+func (t *Table) String() string {
+	var rows []string
+	for rowIdx := 0; rowIdx < t.RowLen; rowIdx++ {
+		var line []string
+		for lineIdx := 0; lineIdx < t.LineLen; lineIdx++ {
+			point := t.Table[rowIdx][lineIdx]
+			s := fmt.Sprintf("%d", point.TypeCode)
+			line = append(line, s)
+		}
+		rows = append(rows, strings.Join(line, "\t"))
+	}
+	return strings.Join(rows, "\n") + "\n"
 }
 
-func NewTableFromRandom(typeCodeCount, rowLen, lineLen int) *GameTable {
+func NewTableFromArr(tableArr [][]int) *Table {
+	return newTable(tableArr)
+}
+
+func NewTableFromRandom(typeCodeCount, rowLen, lineLen int) *Table {
 	total := lineLen * rowLen
 	TableList, err := utils.GenRandomTableList(typeCodeCount, total)
 	if err != nil {
@@ -59,7 +66,7 @@ func NewTableFromRandom(typeCodeCount, rowLen, lineLen int) *GameTable {
 	if err != nil {
 		log.Fatal("[ERROR] Gen TableArr", err)
 	}
-	table := NewGameTable(TableArr)
+	table := newTable(TableArr)
 	return table
 }
 
@@ -68,7 +75,7 @@ func NewTableFromImageByCount(
 	fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY int,
 	rowLen, lineLen int,
 	emptyIndies []*image2.Idx,
-) *GameTable {
+) *Table {
 	img, err := image2.NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
 	if err != nil {
 		log.Fatal(err)
@@ -90,7 +97,7 @@ func NewTableFromImageByPixel(
 	fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY int,
 	subImgDW, subImgDH int,
 	emptyIndies []*image2.Idx,
-) *GameTable {
+) *Table {
 	img, err := image2.NewImage(imagePath, fixRectangleMinPointX, fixRectangleMinPointY, fixRectangleMaxPointX, fixRectangleMaxPointY)
 	if err != nil {
 		log.Fatal(err)
@@ -107,38 +114,24 @@ func NewTableFromImageByPixel(
 	return table
 }
 
-func NewTableByImageArr(imageArr [][]*image.NRGBA, emptyIndies []*image2.Idx) (*GameTable, error) {
+func NewTableByImageArr(imageArr [][]*image.NRGBA, emptyIndies []*image2.Idx) (*Table, error) {
 	linkGameTable, err := image2.GenTableArrByImages(imageArr, emptyIndies)
 	if err != nil {
 		return nil, err
 	}
 	withEmpty := utils.AddOutEmptyPoint(linkGameTable)
-	table := NewGameTable(withEmpty)
+	table := newTable(withEmpty)
 	return table, nil
 }
 
-func (t *GameTable) String() string {
-	var rows []string
-	for rowIdx := 0; rowIdx < t.rowLen; rowIdx++ {
-		var line []string
-		for lineIdx := 0; lineIdx < t.lineLen; lineIdx++ {
-			point := t.table[rowIdx][lineIdx]
-			s := fmt.Sprintf("%d", point.TypeCode)
-			line = append(line, s)
-		}
-		rows = append(rows, strings.Join(line, "\t"))
+func (t *Table) GetPoint(rowIdx, lineIdx int) (*Point, error) {
+	if 0 > rowIdx || rowIdx >= t.RowLen || 0 > lineIdx || lineIdx >= t.LineLen {
+		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, t.RowLen, t.LineLen)
 	}
-	return strings.Join(rows, "\n") + "\n"
+	return t.Table[rowIdx][lineIdx], nil
 }
 
-func (t *GameTable) GetPoint(rowIdx, lineIdx int) (*Point, error) {
-	if 0 > rowIdx || rowIdx >= t.rowLen || 0 > lineIdx || lineIdx >= t.lineLen {
-		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, t.rowLen, t.lineLen)
-	}
-	return t.table[rowIdx][lineIdx], nil
-}
-
-func (t *GameTable) SetEmpty(rowIdx, lineIdx int) error {
+func (t *Table) SetEmpty(rowIdx, lineIdx int) error {
 	p, err := t.GetPoint(rowIdx, lineIdx)
 	if err != nil {
 		return err
@@ -182,6 +175,4 @@ func InitTable(method string) {
 	}
 }
 
-func GetTable() *GameTable {
-	return table
-}
+func GetTable() *Table { return table }

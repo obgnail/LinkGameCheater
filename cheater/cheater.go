@@ -2,30 +2,47 @@ package cheater
 
 import (
 	"fmt"
+	"github.com/obgnail/LinkGameCheater/config"
 
 	"github.com/obgnail/LinkGameCheater/linker"
 )
 
 type Cheater struct {
-	table      *linker.GameTable
-	pointPairs map[*linker.PointPair]byte
+	table      *linker.Table
+	pointPairs map[*linker.PointPair]struct{}
 }
 
-func NewGame(table *linker.GameTable) *Cheater {
+func NewGame(table *linker.Table) *Cheater {
 	g := &Cheater{table: table}
-	g.collectPointPairs()
+	g.collectPointPairs(table)
 	return g
 }
 
-func (c *Cheater) collectPointPairs() {
-	ret := make(map[*linker.PointPair]byte)
-	for _, points := range c.table.PointTypeMap {
+func (c *Cheater) collectPointPairs(table *linker.Table) {
+	pointTypeMap := make(map[int][]*linker.Point)
+
+	for rowIdx := 0; rowIdx < table.RowLen; rowIdx++ {
+		for lineIdx := 0; lineIdx < table.LineLen; lineIdx++ {
+			point := table.Table[rowIdx][lineIdx]
+			typeCode := point.TypeCode
+			if typeCode != config.PointTypeCodeEmpty {
+				pointTypeMap[typeCode] = append(pointTypeMap[typeCode], point)
+			}
+		}
+	}
+
+	ret := make(map[*linker.PointPair]struct{})
+	for _, points := range pointTypeMap {
 		pps := linker.Compose(points)
 		for _, pp := range pps {
-			ret[pp] = 1
+			ret[pp] = struct{}{}
 		}
 	}
 	c.pointPairs = ret
+}
+
+func (c *Cheater) removePointPairs(pointPair *linker.PointPair) {
+	delete(c.pointPairs, pointPair)
 }
 
 func (c *Cheater) Play() error {
@@ -34,11 +51,12 @@ func (c *Cheater) Play() error {
 		hadLinked := false
 		for pointPair := range c.pointPairs {
 			if pointPair.Start.IsEmpty() || pointPair.End.IsEmpty() {
-				delete(c.pointPairs, pointPair)
+				c.removePointPairs(pointPair)
 				continue
 			}
+
 			lt := linker.NewLinkTester(pointPair)
-			canLink := lt.CanLink()
+			canLink := lt.TestLink()
 			if canLink {
 				fmt.Printf(" step %d %s\n", step, pointPair)
 				step++
