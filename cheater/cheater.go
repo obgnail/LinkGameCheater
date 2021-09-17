@@ -2,8 +2,8 @@ package cheater
 
 import (
 	"fmt"
-	"github.com/obgnail/LinkGameCheater/config"
 
+	"github.com/obgnail/LinkGameCheater/config"
 	"github.com/obgnail/LinkGameCheater/linker"
 )
 

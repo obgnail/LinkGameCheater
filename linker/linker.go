@@ -13,7 +13,7 @@ func NewLinkTester(pp *PointPair) *Linker {
 	return &Linker{PointPair: pp}
 }
 
-func (l *Linker) getPathfinder(from string) *Point {
+func (l *Linker) getPoint(from string) *Point {
 	var point *Point
 	switch from {
 	case "start":
@@ -29,7 +29,7 @@ func (l *Linker) CanLinkInSameLineAxis() bool {
 	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := l.getPathfinder("start")
+	currentPoint := l.getPoint("start")
 	for {
 		nextPoint, err := currentPoint.Right()
 		if err != nil {
@@ -41,13 +41,11 @@ func (l *Linker) CanLinkInSameLineAxis() bool {
 		// 移动之后，马上进行判断:
 		arrived := EqualPoint(nextPoint, l.End)
 		if arrived {
+			// 两点重合,当其中一点为空 或 两点typeCode相等时:
 			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
 			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
-			if pointIsEmpty || currentPointEqualThenEndPoint {
-				return true
-			} else {
-				return false
-			}
+			ok := pointIsEmpty || currentPointEqualThenEndPoint
+			return ok
 		} else {
 			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
@@ -63,7 +61,7 @@ func (l *Linker) CanLinkInSameRowAxis() bool {
 	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := l.getPathfinder("start")
+	currentPoint := l.getPoint("start")
 	for {
 		nextPoint, err := currentPoint.Down()
 		if err != nil {
@@ -76,11 +74,8 @@ func (l *Linker) CanLinkInSameRowAxis() bool {
 		if arrived {
 			pointIsEmpty := nextPoint.IsEmpty() || currentPoint.IsEmpty()
 			currentPointEqualThenEndPoint := EqualTypeCode(currentPoint, l.End)
-			if pointIsEmpty || currentPointEqualThenEndPoint {
-				return true
-			} else {
-				return false
-			}
+			ok := pointIsEmpty || currentPointEqualThenEndPoint
+			return ok
 		} else {
 			if nextPoint.IsEmpty() {
 				currentPoint = nextPoint
