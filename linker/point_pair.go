@@ -4,12 +4,7 @@ import (
 	"fmt"
 )
 
-/*
-   +────+───> Y(Line)
-   │
-   │
-   X(Row)
-*/
+
 type PointPair struct {
 	Start *Point
 	End   *Point

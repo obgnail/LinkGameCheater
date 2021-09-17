@@ -2,10 +2,22 @@ package linker
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/obgnail/LinkGameCheater/config"
 )
 
+const (
+	DirectionRight = iota
+	DirectionLeft
+	DirectionUp
+	DirectionDown
+)
+
+/*
+   +────+───> Y(Line)
+   │
+   │
+   X(Row)
+*/
 type Point struct {
 	RowIdx   int
 	LineIdx  int
@@ -52,17 +64,17 @@ func (p *Point) UnderThen(other *Point) bool {
 }
 
 // 获取临近点
-func (p *Point) Direction(direction string) (*Point, error) {
+func (p *Point) GetNextPoint(direction int) (*Point, error) {
 	rowIdx := p.RowIdx
 	lineIdx := p.LineIdx
 	switch direction {
-	case "right":
+	case DirectionRight:
 		lineIdx++
-	case "left":
+	case DirectionLeft:
 		lineIdx--
-	case "up":
+	case DirectionUp:
 		rowIdx--
-	case "down":
+	case DirectionDown:
 		rowIdx++
 	}
 
@@ -71,25 +83,22 @@ func (p *Point) Direction(direction string) (*Point, error) {
 	if err != nil {
 		return nil, err
 	}
-	if newPoint.isInValid() {
-		return nil, fmt.Errorf("point(%d, %d) is out of boundary(%d, %d)", rowIdx, lineIdx, table.RowLen, table.LineLen)
-	}
 	return newPoint, nil
 }
 
 func (p *Point) Right() (*Point, error) {
-	return p.Direction("right")
+	return p.GetNextPoint(DirectionRight)
 }
 
 func (p *Point) Left() (*Point, error) {
-	return p.Direction("left")
+	return p.GetNextPoint(DirectionLeft)
 }
 
 func (p *Point) Up() (*Point, error) {
-	return p.Direction("up")
+	return p.GetNextPoint(DirectionUp)
 }
 func (p *Point) Down() (*Point, error) {
-	return p.Direction("down")
+	return p.GetNextPoint(DirectionDown)
 }
 
 // 组合
