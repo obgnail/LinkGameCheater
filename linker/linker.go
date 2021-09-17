@@ -13,24 +13,13 @@ func NewLinker(pp *PointPair) *Linker {
 	return &Linker{PointPair: pp}
 }
 
-func (l *Linker) getPoint(from string) *Point {
-	var point *Point
-	switch from {
-	case "start":
-		point = l.Start
-	case "end":
-		point = l.End
-	}
-	return point
-}
-
 // 一划：横
 func (l *Linker) CanLinkInSameLineAxis() bool {
 	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := l.getPoint("start")
-	targetPoint := l.getPoint("end")
+	currentPoint := l.GetStartPoint()
+	targetPoint := l.GetEndPoint()
 	for {
 		nextPoint, err := currentPoint.Right()
 		if err != nil {
@@ -58,8 +47,8 @@ func (l *Linker) CanLinkInSameRowAxis() bool {
 	if isSamePoint := l.EqualPoint(); isSamePoint {
 		return true
 	}
-	currentPoint := l.getPoint("start")
-	targetPoint := l.getPoint("end")
+	currentPoint := l.GetStartPoint()
+	targetPoint := l.GetEndPoint()
 	for {
 		nextPoint, err := currentPoint.Down()
 		if err != nil {

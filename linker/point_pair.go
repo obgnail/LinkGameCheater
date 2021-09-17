@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-
 type PointPair struct {
 	Start *Point
 	End   *Point
@@ -24,6 +23,14 @@ func NewPointPair(p1, p2 *Point) *PointPair {
 		start, end = p2, p1
 	}
 	return &PointPair{Start: start, End: end}
+}
+
+func (pp *PointPair) GetStartPoint() *Point {
+	return pp.Start
+}
+
+func (pp *PointPair) GetEndPoint() *Point {
+	return pp.End
 }
 
 // 同轴
