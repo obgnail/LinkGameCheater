@@ -129,7 +129,7 @@ func (l *Linker) GetEndPointCanReachPointsOnAxis() []*Point {
 	var ret []*Point
 	end := l.End
 
-	collectCanReachPoints := func(direction int) {
+	collectCanReachPoints := func(direction Direction) {
 		current := end
 		for {
 			newPoint, err := current.GetNextPoint(direction)

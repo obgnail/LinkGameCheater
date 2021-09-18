@@ -7,8 +7,10 @@ import (
 	"github.com/obgnail/LinkGameCheater/config"
 )
 
+type Direction int
+
 const (
-	DirectionRight = iota
+	DirectionRight Direction = iota
 	DirectionLeft
 	DirectionUp
 	DirectionDown
@@ -66,7 +68,7 @@ func (p *Point) UnderThen(other *Point) bool {
 }
 
 // 获取临近点
-func (p *Point) GetNextPoint(direction int) (*Point, error) {
+func (p *Point) GetNextPoint(direction Direction) (*Point, error) {
 	rowIdx := p.RowIdx
 	lineIdx := p.LineIdx
 	switch direction {
